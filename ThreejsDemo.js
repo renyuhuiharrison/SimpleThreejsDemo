@@ -1,5 +1,5 @@
 //声明全局变量
-var renderer, camera, scene, geometry, material, mesh
+var renderer, camera, scene, geometry, material, mesh, bAnimate
 
 //性能显示插件，需要每帧调用
 stats = new Stats();
@@ -50,10 +50,19 @@ function initGUI() {
         mesh.position.set(datControls.positionX, datControls.positionY, datControls.positionZ);
     }
 
+    //播放旋转动画按钮
+    bAnimate = false;
+    var animateBtn = new function() {
+        this.CubeAnimation = function() {
+            bAnimate = !bAnimate;
+        }
+    }
+    gui.add(animateBtn, "CubeAnimation");
+
     //导入Obj模型
     var importBtn = new function() {
         this.ImportObjModel = function() {
-            initObjModel();
+            loadObjModel();
         }
     }
     gui.add(importBtn, "ImportObjModel");
@@ -71,7 +80,7 @@ function initControls() {
 }
 
 //导入obj模型
-function initObjModel() {
+function loadObjModel() {
 
     var objLoader = new THREE.OBJLoader();
 
@@ -97,9 +106,11 @@ function initObjModel() {
 function render() {
     requestAnimationFrame(render) //循环调用render()
 
-    // mesh.rotation.x += 0.01
-    // mesh.rotation.y += 0.02
-
+    if (bAnimate) {
+        mesh.rotation.x += 0.01
+        mesh.rotation.y += 0.02
+    }
+    
     stats.update();
     
     renderer.render(scene, camera);

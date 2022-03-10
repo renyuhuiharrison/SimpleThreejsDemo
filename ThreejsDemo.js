@@ -51,12 +51,22 @@ function initGUI() {
     }
 }
 
+//初始化交互器
+function initControls() {
+    //创建控制器对象
+    var controls = new THREE.OrbitControls(camera, renderer.domElement)
+    //监听鼠标事件
+    controls.addEventListener('change', ()=>{
+        renderer.render(scene, camera)
+    })
+}
+
 //渲染
 function render() {
     requestAnimationFrame(render) //循环调用render()
 
-    mesh.rotation.x += 0.01
-    mesh.rotation.y += 0.02
+    // mesh.rotation.x += 0.01
+    // mesh.rotation.y += 0.02
 
     stats.update()
     
@@ -72,6 +82,8 @@ function init(){
     initCamera()
     initMesh()
     initGUI()
+    initControls()
+
     render()
 }
 

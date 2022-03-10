@@ -1,6 +1,10 @@
 //声明全局变量
 var renderer, camera, scene, geometry, material, mesh
 
+//性能显示插件，需要每帧调用
+stats = new Stats()
+document.body.appendChild(stats.dom)
+
 //初始化渲染器
 function initRenderer() {
     renderer = new THREE.WebGLRenderer()
@@ -28,13 +32,15 @@ function initMesh() {
     scene.add(mesh)
 }
 
-//运行动画
-function animate() {
-    requestAnimationFrame(animate) //循环调用此函数
+//渲染
+function render() {
+    requestAnimationFrame(render) //循环调用render()
 
     mesh.rotation.x += 0.01
     mesh.rotation.y += 0.02
 
+    stats.update()
+    
     renderer.render(scene, camera)
 }
 
@@ -44,7 +50,7 @@ function init(){
     initScene()
     initCamera()
     initMesh()
-    animate()
+    render()
 }
 
 //onload比ready执行得稍晚一些

@@ -32,6 +32,25 @@ function initMesh() {
     scene.add(mesh)
 }
 
+//初始化GUI
+function initGUI() {
+    
+    var datControls = {
+        positionX: 0, 
+        positionY: 0,
+        positionZ: 0}
+    
+    gui = new dat.GUI()
+    gui.add(datControls, "positionX", -10, 10).onChange(updateCubePosition)
+    gui.add(datControls, "positionY", -10, 10).onChange(updateCubePosition)
+    gui.add(datControls, "positionZ", -10, 10).onChange(updateCubePosition)
+    
+    //更新cube位置
+    function updateCubePosition() {
+        mesh.position.set(datControls.positionX, datControls.positionY, datControls.positionZ)
+    }
+}
+
 //渲染
 function render() {
     requestAnimationFrame(render) //循环调用render()
@@ -44,12 +63,15 @@ function render() {
     renderer.render(scene, camera)
 }
 
+
+
 function init(){
 
     initRenderer()
     initScene()
     initCamera()
     initMesh()
+    initGUI()
     render()
 }
 

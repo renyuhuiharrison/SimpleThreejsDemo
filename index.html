@@ -5,10 +5,13 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
-    <script src="./libs/three.js"></script>
+    <script src="./node_modules/three/build/three.js"></script>
+    <!-- <script src="https://cdn.bootcss.com/dat-gui/0.7.1/dat.gui.min.js"></script> -->
+    <script src="./node_modules/dat.gui/build/dat.gui.js"></script>
     <script src="./libs/stats.min.js"></script>
-    <script src="https://cdn.bootcss.com/dat-gui/0.7.1/dat.gui.min.js"></script>
-    <script src="./libs/OrbitControls.js"></script>
+    <script src="./node_modules/three/examples/js/controls/OrbitControls.js"></script>
+    <script src="./node_modules/three/examples/js/loaders/OBJLoader.js"></script>
+
     <style>
         body{
             /*边距设置为0，设置溢出隐藏，完整使用整个页面*/
@@ -19,6 +22,6 @@
 </head>
 <body>
     <div id="webgl-output"></div>
-    <script src="ThreejsDemo.js"></scrip>
+    <script src="ThreejsDemo.js"></script>
 </body>
 </html>

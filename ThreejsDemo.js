@@ -77,6 +77,14 @@ function initControls() {
     controls.addEventListener('change', ()=>{
         renderer.render(scene, camera);
     });
+
+    //改变窗口大小时，渲染同时更新
+    window.addEventListener('resize', onWindowResize, false);
+    function onWindowResize() {
+        camera.aspect = window.innerWidth / window.innerHeight;
+        camera.updateProjectionMatrix();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+    }
 }
 
 //导入obj模型

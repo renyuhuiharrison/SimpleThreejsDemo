@@ -1,5 +1,5 @@
 //声明全局变量
-var renderer, camera, scene, geometry, material, mesh, bAnimate
+var renderer, camera, scene, geometry, material, mesh, bAnimate, controls
 
 //性能显示插件，需要每帧调用
 stats = new Stats();
@@ -35,6 +35,7 @@ function initMesh() {
 //初始化GUI
 function initGUI() {
     
+    //坐标位置UI
     var datControls = {
         positionX: 0, 
         positionY: 0,
@@ -49,6 +50,14 @@ function initGUI() {
     function updateCubePosition() {
         mesh.position.set(datControls.positionX, datControls.positionY, datControls.positionZ);
     }
+
+    //场景居中显示UI
+    var reset = new function() {
+        this.resetCamera = function() {
+            resetCamera();
+        }
+    }
+    gui.add(reset, "resetCamera");
 
     //播放旋转动画按钮
     bAnimate = false;
@@ -71,7 +80,7 @@ function initGUI() {
 //初始化交互器
 function initControls() {
     //创建控制器对象
-    var controls = new THREE.OrbitControls(camera, renderer.domElement);
+    controls = new THREE.OrbitControls(camera, renderer.domElement);
 
     //监听鼠标事件
     controls.addEventListener('change', ()=>{
@@ -124,6 +133,24 @@ function render() {
     renderer.render(scene, camera);
 }
 
+//居中显示模型
+function resetCamera() {
+    // controls.object.position.set(1, 1, 1); // 设置相机的位置
+    // controls.target.set(0, 0, 0); // 设置相机所看的目标位置
+
+    let box = new THREE.Box3().setFromObject(mesh); // 获取模型的包围盒
+    let mdlen = box.max.x - box.min.x; // 模型长度
+    let mdwid = box.max.z - box.min.z; // 模型宽度
+    let mdhei = box.max.y - box.min.y; // 模型高度
+    let x1 = box.min.x + mdlen / 2; // 模型中心点坐标X
+    let y1 = box.min.y + mdhei / 2; // 模型中心点坐标Y
+    let z1 = box.min.z + mdwid / 2; // 模型中心点坐标Z
+    let diagonal = Math.sqrt(Math.pow(Math.sqrt(Math.pow(mdlen, 2) + Math.pow(mdwid, 2)), 2) + Math.pow(mdhei, 2)); // 获取模型整体对角线长度,这里获取模型模型对角线的目的是为了保证模型可以完全的展示在视线范围内
+    // 假设我们需要的进入视角为45度
+    controls.object.position.set(box.max.x + diagonal / 2, (diagonal * 2) / Math.tan(Math.PI / 180 * 45) + Math.abs(box.max.y), box.max.z + diagonal / 2); // 设置相机位置，向上偏移，确定可以包裹整个模型
+    controls.target.set(x1, y1, z1); // 设置相机的视角方向，看向模型的中心点
+    controls.update(); // 更新相机
+}
 
 
 function init(){

@@ -62,11 +62,11 @@ function initGUI() {
     //播放旋转动画按钮
     bAnimate = false;
     var animateBtn = new function() {
-        this.CubeAnimation = function() {
+        this.RotateAnimation = function() {
             bAnimate = !bAnimate;
         }
     }
-    gui.add(animateBtn, "CubeAnimation");
+    gui.add(animateBtn, "RotateAnimation");
 
     //导入Obj模型
     var importBtn = new function() {
@@ -106,7 +106,11 @@ function loadObjModel() {
 	// called when resource is loaded
 	function ( object ) {
         object.children[0].material = material;
-		scene.add( object );
+
+        //场景中只保留一个模型
+		scene.remove(mesh);
+        scene.add(object);
+        mesh = object;
 	},
 	// called when loading is in progresses
 	function ( xhr ) {
@@ -124,8 +128,8 @@ function render() {
     requestAnimationFrame(render) //循环调用render()
 
     if (bAnimate) {
-        mesh.rotation.x += 0.01
-        mesh.rotation.y += 0.02
+        // mesh.rotation.x += 0.01
+        mesh.rotation.y += 0.01
     }
     
     stats.update();

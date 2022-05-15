@@ -75,6 +75,14 @@ function initGUI() {
         }
     }
     gui.add(importBtn, "ImportObjModel");
+
+    //环境贴图
+    var createSkyBoxBtn = new function() {
+        this.CreateSkyBox = function() {
+            loadSkyBox();
+        }
+    }
+    gui.add(createSkyBoxBtn, "CreateSkyBox");
 }
 
 //初始化交互器
@@ -96,8 +104,25 @@ function initControls() {
     }
 }
 
+//清空场景
+function clearScene() {
+    clearObjects();
+    clearBackground();
+}
+
+//清空场景中的物体
+function clearObjects() {
+    scene.remove();
+}
+
+//清除场景背景
+function clearBackground(){
+    scene.background = null;
+}
+
 //导入obj模型
 function loadObjModel() {
+    clearScene();
 
     var objLoader = new THREE.OBJLoader();
 
@@ -122,6 +147,36 @@ function loadObjModel() {
 	});
 }
 
+//天空盒
+function loadSkyBox() {
+    clearScene();
+    
+    const cubeTextureLoader = new THREE.CubeTextureLoader();
+    const envMapTexture = cubeTextureLoader.load([
+        "images/textures/CubeTextures01/+x.jpg",
+        "images/textures/CubeTextures01/-x.jpg",
+        "images/textures/CubeTextures01/+y.jpg",
+        "images/textures/CubeTextures01/-y.jpg",
+        "images/textures/CubeTextures01/+z.jpg",
+        "images/textures/CubeTextures01/-z.jpg"
+    ]);
+
+    const sphereGeometry = new THREE.SphereBufferGeometry(1,20,20);
+    const material = new THREE.MeshStandardMaterial(
+        {
+            metalness: 0.7,
+            roughness: 0.1,
+            envMap: envMapTexture
+        }
+    )
+    const sphere = new THREE.Mesh(sphereGeometry, material);
+    scene.remove(mesh);
+    scene.add(sphere);
+    mesh = sphere;
+
+    //给场景添加背景
+    scene.background = envMapTexture;
+}
 
 //渲染
 function render() {

@@ -83,6 +83,15 @@ function initGUI() {
         }
     }
     gui.add(createSkyBoxBtn, "CreateSkyBox");
+
+    //HDR环境贴图
+    var createHDRSkyBtn = new function() {
+        this.CreateHDRSky = function() {
+            loadHDRSky();
+        }
+    }
+    gui.add(createHDRSkyBtn, "CreateHDRSky");
+
 }
 
 //初始化交互器
@@ -112,12 +121,13 @@ function clearScene() {
 
 //清空场景中的物体
 function clearObjects() {
-    scene.remove();
+    scene.remove(mesh);
 }
 
 //清除场景背景
 function clearBackground(){
     scene.background = null;
+    scene.environment = null;
 }
 
 //导入obj模型
@@ -133,7 +143,6 @@ function loadObjModel() {
         object.children[0].material = material;
 
         //场景中只保留一个模型
-		scene.remove(mesh);
         scene.add(object);
         mesh = object;
 	},
@@ -150,7 +159,7 @@ function loadObjModel() {
 //天空盒
 function loadSkyBox() {
     clearScene();
-    
+
     const cubeTextureLoader = new THREE.CubeTextureLoader();
     const envMapTexture = cubeTextureLoader.load([
         "images/textures/CubeTextures01/+x.jpg",
@@ -165,17 +174,42 @@ function loadSkyBox() {
     const material = new THREE.MeshStandardMaterial(
         {
             metalness: 0.7,
-            roughness: 0.1,
-            envMap: envMapTexture
+            roughness: 0.1
         }
     )
     const sphere = new THREE.Mesh(sphereGeometry, material);
-    scene.remove(mesh);
     scene.add(sphere);
     mesh = sphere;
 
     //给场景添加背景
     scene.background = envMapTexture;
+
+    //给场景所有物体天机默认的环境贴图
+    scene.environment = envMapTexture;
+}
+
+//HDR环境贴图
+function loadHDRSky() {
+    clearScene();
+
+    const sphereGeometry = new THREE.SphereBufferGeometry(1,20,20);
+    const material = new THREE.MeshStandardMaterial(
+        {
+            metalness: 0.7,
+            roughness: 0.1
+        }
+    )
+    const sphere = new THREE.Mesh(sphereGeometry, material);
+    scene.add(sphere);
+    mesh = sphere;
+
+    const rgbeLoader = new THREE.RGBELoader();
+    //异步加载
+    rgbeLoader.loadAsync("images/textures/hdr01/vignaioli_night_4k.hdr").then((texture) => {
+        texture.mapping = THREE.EquirectangularRefractionMapping;
+        scene.background = texture;
+        scene.environment = texture;
+    });
 }
 
 //渲染
